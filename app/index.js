@@ -1,18 +1,33 @@
-var MongoClient = require('mongodb').MongoClient;
+var config = require('./config');
 var express = require('express');
 var app = express();
+var database = require('./database');
 
-MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
-  if (err) {
-    throw err;
-  }
-  console.log('Connected to db');
-});
+var server;
 
 app.get('/track', function (req, res) {
-  res.send('tracked');
+  console.log(req);
+  res.send({status: 'ok'});
 });
 
-app.listen(1337, function () {
-  console.log('Listening on port 1337!');
-});
+var shutdown = function() {
+  server.close();
+};
+
+var startServer = function () {
+  server = app.listen(config.server.port, function () {
+    console.log('Listening on port ' + config.server.port + '!');
+  });
+}
+
+var boot = function () {
+  database.init(startServer);
+}
+
+if (require.main === module) {
+  boot();
+} else {
+  exports.shutdown = shutdown;
+  exports.boot = boot;
+  exports.startServer = startServer;
+}

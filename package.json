@@ -1,0 +1,33 @@
+{
+  "name": "tracker.js",
+  "version": "0.0.1",
+  "description": "Node.js tracker",
+  "main": "app/index.js",
+  "directories": {
+    "test": "test",
+    "app": "app"
+  },
+  "scripts": {
+    "app": "node ./app/index.js",
+    "test": "node ./node_modules/mocha/bin/mocha --opts test/mocha.opts test/**/*.test.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ra100/express-js-test-app.git"
+  },
+  "author": "ra100",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ra100/express-js-test-app/issues"
+  },
+  "homepage": "https://github.com/ra100/express-js-test-app#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coffee-script": "^1.10.0",
+    "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "mongodb": "^2.1.18"
+  }
+}

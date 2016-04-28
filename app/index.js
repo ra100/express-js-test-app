@@ -12,9 +12,7 @@ let server;
  * Initializes databse and starts http server.
  */
 function boot() {
-  file.init(config.file.path).then(database.init).then(startServer).catch((err) => {
-    console.error(err);
-  });
+  file.init(config.file.path, config.file.name).then(database.init).then(startServer).catch(console.error);
 }
 
 /**
@@ -32,8 +30,11 @@ function startServer() {
     if (typeof req.query.count !== 'undefined') {
       database.increment(Number(req.query.count));
     }
-    // TODO append data to file
-    res.send({status: 'ok'});
+    file.append(req.query).then(() => {
+      res.send({status: 'ok'});
+    }).catch(() => {
+      res.sendStatus(500);
+    });
   });
 
   /**
@@ -43,8 +44,11 @@ function startServer() {
     if (typeof req.body.count !== 'undefined') {
       database.increment(Number(req.body.count));
     }
-    // TODO append data to file
-    res.send({status: 'ok'});
+    file.append(req.body).then(() => {
+      res.send({status: 'ok'});
+    }).catch(() => {
+      res.sendStatus(500);
+    });
   });
 
   /**

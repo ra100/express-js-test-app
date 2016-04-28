@@ -1,22 +1,31 @@
-var config = require('./config');
-var express = require('express');
-var app = express();
-var database = require('./database');
+'use strict';
 
-var server;
+const config = require('./config');
+const express = require('express');
+
+let app = express();
+let database = require('./database');
+let server;
+
+/**
+ * Initializes databse and starts http server.
+ */
+function boot() {
+  database.init(startServer);
+}
 
 /**
  * Shuts down the server.
  */
-var shutdown = function () {
+function shutdown() {
   server.close();
 };
 
-var startServer = function () {
+function startServer() {
   /**
    * Handles get requests on route /track.
    */
-  app.get('/track', function (req, res) {
+  app.get('/track', (req, res) => {
     if (typeof req.query.count !== 'undefined') {
       database.increment(Number(req.query.count));
     }
@@ -27,7 +36,7 @@ var startServer = function () {
   /**
    * Handles post requests on route /track.
    */
-  app.post('/track', function(req, res) {
+  app.post('/track', (req, res) => {
     if (typeof req.body.count !== 'undefined') {
       database.increment(Number(req.body.count));
     }
@@ -38,23 +47,16 @@ var startServer = function () {
   /**
    * Returns status 404 Not Found for every other route.
    */
-  app.use(function(req, res, next) {
+  app.use((req, res, next) => {
     res.sendStatus(404);
   });
 
   /**
    * Start server listening on port set in config.
    */
-  server = app.listen(config.server.port, function () {
+  server = app.listen(config.server.port, () => {
     console.info('listening on port %s!', config.server.port);
   });
-}
-
-/**
- * Initializes databse and starts http server.
- */
-var boot = function () {
-  database.init(startServer);
 }
 
 if (require.main === module) {

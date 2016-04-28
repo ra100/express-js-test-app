@@ -22,19 +22,16 @@ module.exports = {
         resolve('Error: Count must be a number');
       });
     }
-    return logModel.findOne({name: config.log.name}).then(function (log) {
+    var saveIncrement = function (log) {
       if (log !== null) {
         log.count += count;
-        return log.save().then().catch(function (err) {
-          console.error('Error saving record: ', err);
-        });
+        return log.save();
       } else {
-        return logModel.create({name: config.log.name, count: count}).then().catch(function (err) {
-          console.error('Error saving record: ', err);
-        });
+        return logModel.create({name: config.log.name, count: count});
       }
-    }).catch(function (err) {
-      console.error('Error finding record: ', err);
+    }
+    return logModel.findOne({name: config.log.name}).then(saveIncrement).catch(function (err) {
+      console.error('Database error: ', err);
     });
   }
 }

@@ -6,7 +6,8 @@ module.exports = {
     port: 1337
   },
   file: {
-    path: '../.tmp/data.json'
+    path: '.tmp',
+    name: 'data.json'
   },
   log: {
     name: 'log'

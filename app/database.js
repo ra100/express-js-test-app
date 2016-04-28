@@ -16,18 +16,20 @@ module.exports = {
     });
     mongoose.connect(config.db.mongodb);
   },
-  increment: function (count, cb) {
+  increment: function (count) {
     if (typeof count !== 'number') {
-      return cb('Error: Count must be a number');
+      return new Promise(function (resolve, reject) {
+        resolve('Error: Count must be a number');
+      });
     }
-    logModel.findOne({name: config.log.name}).then(function (log) {
+    return logModel.findOne({name: config.log.name}).then(function (log) {
       if (log !== null) {
         log.count += count;
-        log.save().then(cb).catch(function (err) {
+        return log.save().then().catch(function (err) {
           console.error('Error saving record: ', err);
         });
       } else {
-        logModel.create({name: config.log.name, count: count}).then(cb).catch(function (err) {
+        return logModel.create({name: config.log.name, count: count}).then().catch(function (err) {
           console.error('Error saving record: ', err);
         });
       }

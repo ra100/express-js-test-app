@@ -23,6 +23,7 @@
   "homepage": "https://github.com/ra100/express-js-test-app#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
     "coffee-script": "^1.10.0",
     "mocha": "^2.4.5"
   },

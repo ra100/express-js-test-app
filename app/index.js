@@ -7,12 +7,15 @@ let app = express();
 let database = require('./database');
 let file = require('./file');
 let server;
+let env = 'prod';
 
 /**
  * Initializes databse and starts http server.
  */
 function boot() {
-  file.init(config.file.path, config.file.name).then(database.init).then(startServer).catch(console.error);
+  file.init(config.file.path, config.file.name).then(() => {
+    database.init(config.db[env]);
+  }).then(startServer).catch(console.error);
 }
 
 /**
@@ -55,7 +58,7 @@ function startServer() {
    * Returns status 404 Not Found for every other route.
    */
   app.use((req, res, next) => {
-    res.sendStatus(404);
+    return res.sendStatus(404);
   });
 
   /**
@@ -73,4 +76,6 @@ if (require.main === module) {
   exports.boot = boot;
   exports.startServer = startServer;
   exports.database = database;
+  exports.app = app;
+  exports.env = env;
 }

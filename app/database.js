@@ -7,16 +7,20 @@ const logModel = mongoose.model('log', logSchema);
 module.exports = {
   /**
    * Initialize database connection.
-   * @param  {Function} cb callback
+   * @return {Promise}      Promise
    */
-  init(cb) {
+  init() {
     let db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'database connection error:'));
-    db.once('open', () => {
-      console.info('database connection established');
-      cb();
+    return new Promise((resolve, reject) => {
+      db.on('error', (err) => {
+        reject('database connection error:', err);
+      });
+      db.once('open', () => {
+        console.info('database connection established');
+        resolve();
+      });
+      mongoose.connect(config.db.mongodb);
     });
-    mongoose.connect(config.db.mongodb);
   },
   /**
    * Increments value in database.
@@ -24,21 +28,22 @@ module.exports = {
    * @return {Promise}      Promise
    */
   increment(count) {
-    if (typeof count !== 'number') {
-      return new Promise((resolve, reject) => {
-        resolve('Error: Count must be a number');
-      });
-    }
-    let saveIncrement = (log) => {
-      if (log !== null) {
-        log.count += count;
-        return log.save();
-      } else {
-        return logModel.create({name: config.log.name, count: count});
+    return new Promise((resolve, reject) => {
+      if (typeof count !== 'number') {
+        return reject('Error: Count must be a number');
       }
-    }
-    return logModel.findOne({name: config.log.name}).then(saveIncrement).catch((err) => {
-      console.error('Database error: ', err);
+      let saveIncrement = (log) => {
+        if (log !== null) {
+          log.count += count;
+          return log.save();
+        } else {
+          return logModel.create({name: config.log.name, count: count});
+        }
+      }
+      logModel.findOne({name: config.log.name}).then(saveIncrement).then(resolve).catch((err) => {
+        console.error('Database error: ', err);
+        reject(err);
+      });
     });
   }
 }

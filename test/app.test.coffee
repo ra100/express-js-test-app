@@ -13,7 +13,7 @@ describe 'server', ->
   describe 'database', ->
     it 'increment value in database with no numeric value', ->
       return app.database.increment 'a'
-        .should.eventually.be.a 'string'
+        .should.eventually.throw.error
 
     it 'increment value in database', ->
       return app.database.increment 1

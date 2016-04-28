@@ -5,13 +5,16 @@ const express = require('express');
 
 let app = express();
 let database = require('./database');
+let file = require('./file');
 let server;
 
 /**
  * Initializes databse and starts http server.
  */
 function boot() {
-  database.init(startServer);
+  file.init(config.file.path).then(database.init).then(startServer).catch((err) => {
+    console.error(err);
+  });
 }
 
 /**

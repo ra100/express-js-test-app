@@ -7,9 +7,10 @@ const logModel = mongoose.model('log', logSchema);
 module.exports = {
   /**
    * Initialize database connection.
-   * @return {Promise}      Promise
+   * @param  {String} mongodb database connection string
+   * @return {Promise}        Promise
    */
-  init() {
+  init(mongodb) {
     let db = mongoose.connection;
     return new Promise((resolve, reject) => {
       db.on('error', (err) => {
@@ -19,7 +20,7 @@ module.exports = {
         console.info('database connection established');
         resolve();
       });
-      mongoose.connect(config.db.mongodb);
+      mongoose.connect(mongodb);
     });
   },
   /**

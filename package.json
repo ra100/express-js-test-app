@@ -24,11 +24,13 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
+    "chai-http": "^2.0.1",
     "coffee-script": "^1.10.0",
     "mocha": "^2.4.5"
   },
   "dependencies": {
     "express": "^4.13.4",
+    "fs": "0.0.2",
     "mongoose": "^4.4.13"
   }
 }

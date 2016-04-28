@@ -1,6 +1,7 @@
 module.exports = {
   db: {
-    mongodb: 'mongodb://localhost:27017/test'
+    prod: 'mongodb://localhost:27017/prod',
+    test: 'mongodb://localhost:27017/test',
   },
   server: {
     port: 1337

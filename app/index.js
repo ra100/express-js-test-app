@@ -14,7 +14,7 @@ var shutdown = function () {
 
 var startServer = function () {
   /**
-   * Handles requests on path /track.
+   * Handles get requests on route /track.
    */
   app.get('/track', function (req, res) {
     if (typeof req.query.count !== 'undefined') {
@@ -24,6 +24,9 @@ var startServer = function () {
     res.send({status: 'ok'});
   });
 
+  /**
+   * Handles post requests on route /track.
+   */
   app.post('/track', function(req, res) {
     if (typeof req.body.count !== 'undefined') {
       database.increment(Number(req.body.count));
@@ -33,10 +36,17 @@ var startServer = function () {
   });
 
   /**
+   * Returns status 404 Not Found for every other route.
+   */
+  app.use(function(req, res, next) {
+    res.sendStatus(404);
+  });
+
+  /**
    * Start server listening on port set in config.
    */
   server = app.listen(config.server.port, function () {
-    console.info('Listening on port ' + config.server.port + '!');
+    console.info('listening on port %s!', config.server.port);
   });
 }
 

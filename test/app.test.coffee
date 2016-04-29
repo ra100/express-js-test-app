@@ -11,11 +11,14 @@ chai.should()
 
 before ->
   app.env = 'test'
-  app.boot()
+  return app.boot()
 
 describe 'server', ->
 
   describe 'database', ->
+    before ->
+      return app.database.getModel().remove()
+
     it 'increment value in database with no numeric value', ->
       return app.database.increment 'a'
         .should.eventually.throw.error

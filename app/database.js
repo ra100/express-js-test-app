@@ -52,5 +52,12 @@ module.exports = {
       log.count += c;
       log.save().then(resolve);
     });
+  },
+  /**
+   * logModel getter
+   * @return {Object} database model
+   */
+  getModel() {
+    return logModel;
   }
-}
+};

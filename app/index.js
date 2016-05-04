@@ -1,13 +1,11 @@
-'use strict';
-
 const config = require('./config');
 const express = require('express');
 
-let app = express();
-let database = require('./database');
-let file = require('./file');
+const app = express();
+const database = require('./database');
+const file = require('./file');
+const env = 'prod';
 let server;
-let env = 'prod';
 
 /**
  * Initializes databse and starts http server.

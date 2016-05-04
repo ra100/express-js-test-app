@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 
 let file;
@@ -15,24 +13,42 @@ module.exports = {
   init(path, name) {
     file = path + '/' + name;
     return new Promise((resolve, reject) => {
-      try {
-        let filedata = fs.readFileSync(file);
-        data = JSON.parse(filedata);
-      } catch (err) {
+      return new Promise((resolve, reject) => {
+        fs.readFile(file, (err, _data) => {
+          if (err) {
+            return reject(err);
+          }
+          data = JSON.parse(_data);
+          return resolve(data);
+        });
+      }).then((_data) => {
+        fs.writeFile(file, JSON.stringify(_data), (err) => {
+          if (!err) {
+            return resolve(_data);
+          }
+        });
+      }).catch((err) => {
         if (err.code !== 'ENOENT') {
           return reject('Error reading file: ', err);
         }
         data = [];
-        try {
-          fs.mkdirSync(path);
-        } catch (err) {
-          if (err.code !== 'EEXIST') {
-            return reject('Error creating directory: ', err);
-          }
-        }
-        fs.writeFileSync(file, JSON.stringify(data));
-      }
-      resolve(data);
+        return new Promise((resolve, reject) => {
+          fs.mkdir(path, (err) => {
+            if (err.code !== 'EEXIST') {
+              return reject('Error creating directory: ', err);
+            }
+            return resolve();
+          });
+        }).then(() => {
+          return new Promise((resolve, reject) => {
+            fs.writeFile(file, JSON.stringify(data), (err) => {
+              if (!err) {
+                resolve(data);
+              }
+            });
+          });
+        }).then(resolve).catch(reject);
+      });
     });
   },
   /**
@@ -49,6 +65,6 @@ module.exports = {
         }
         resolve(d);
       });
-    })
+    });
   }
-}
+};
